@@ -28,7 +28,7 @@ if(BUILD_SHARED_LIBS)
     target_compile_definitions(Test_Framework PRIVATE TEST_FRAMEWORK_SHARED)
 endif()
 
-# Installation rules
+# Ensure proper export
 install(TARGETS Test_Framework
     EXPORT Test_FrameworkTargets
     ARCHIVE DESTINATION lib
@@ -36,11 +36,10 @@ install(TARGETS Test_Framework
     RUNTIME DESTINATION bin
 )
 
-install(DIRECTORY include/ DESTINATION include)
-
-# Export the library for CMake
 install(EXPORT Test_FrameworkTargets
     FILE Test_FrameworkConfig.cmake
     NAMESPACE Test_Framework::
     DESTINATION lib/cmake/Test_Framework
 )
+
+install(DIRECTORY include/ DESTINATION include)
