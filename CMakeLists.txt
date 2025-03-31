@@ -32,5 +32,4 @@ install(EXPORT Test_FrameworkTargets
     DESTINATION lib/cmake/Test_Framework
 )
 
-# Enable export for FetchContent
-export(EXPORT Test_FrameworkTargets NAMESPACE Test_Framework::)
+
