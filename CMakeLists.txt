@@ -22,6 +22,9 @@ install(TARGETS Test_Framework
 
 install(DIRECTORY include/ DESTINATION include)
 
+# Export for FetchContent builds
+export(EXPORT Test_FrameworkTargets NAMESPACE Test_Framework::)
+
 # Generate a Config file for find_package
 install(EXPORT Test_FrameworkTargets
     FILE Test_FrameworkConfig.cmake
@@ -29,5 +32,3 @@ install(EXPORT Test_FrameworkTargets
     DESTINATION lib/cmake/Test_Framework
 )
 
-# Export for FetchContent builds
-export(EXPORT Test_FrameworkTargets NAMESPACE Test_Framework::)
