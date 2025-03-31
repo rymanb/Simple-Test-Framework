@@ -1,34 +1,49 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.11)
+
+# Define the project name
 project(Test_Framework VERSION 1.0 LANGUAGES CXX)
 
-# Create the library
-add_library(Test_Framework STATIC
+# Add the include directory
+add_library(Test_Framework
     src/TestRegistry.cpp
 )
 
-# Ensure headers are available
-target_include_directories(Test_Framework PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
+# Specify the include directories for the target
+target_include_directories(Test_Framework
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
 )
 
-# Export the target for external projects
+# Optionally specify C++ standard
+target_compile_features(Test_Framework PUBLIC cxx_std_11)
+
+# Define installation rules
+include(GNUInstallDirs)
 install(TARGETS Test_Framework
     EXPORT Test_FrameworkTargets
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(DIRECTORY include/ DESTINATION include)
-
-# Export for FetchContent builds
-export(EXPORT Test_FrameworkTargets NAMESPACE Test_Framework::)
-
-# Generate a Config file for find_package
+# Export the targets to make them available for other projects
 install(EXPORT Test_FrameworkTargets
-    FILE Test_FrameworkConfig.cmake
+    FILE Test_FrameworkTargets.cmake
     NAMESPACE Test_Framework::
-    DESTINATION lib/cmake/Test_Framework
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Test_Framework
 )
 
+# Create a Config file for find_package support
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/Test_FrameworkConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/Test_FrameworkConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Test_Framework
+)
