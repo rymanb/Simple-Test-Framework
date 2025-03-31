@@ -9,13 +9,9 @@ add_library(Test_Framework STATIC
     src/TestRegistry.cpp
 )
 
-# Ensure headers are publicly available
-target_include_directories(Test_Framework PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-)
+target_include_directories(Test_Framework PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-# Export and Install the library
+# Install library and headers
 install(TARGETS Test_Framework
     EXPORT Test_FrameworkTargets
     ARCHIVE DESTINATION lib
@@ -25,11 +21,12 @@ install(TARGETS Test_Framework
 
 install(DIRECTORY include/ DESTINATION include)
 
-# Generate a Config file for find_package
+# Export for find_package
 install(EXPORT Test_FrameworkTargets
     FILE Test_FrameworkConfig.cmake
     NAMESPACE Test_Framework::
     DESTINATION lib/cmake/Test_Framework
 )
 
+export(EXPORT Test_FrameworkTargets NAMESPACE Test_Framework::)
 
