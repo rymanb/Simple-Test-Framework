@@ -1,19 +1,21 @@
 cmake_minimum_required(VERSION 3.13)
-project(Test_Framework VERSION 1.0
-                  DESCRIPTION "C++ Test Framework"
-                  LANGUAGES CXX)
+project(Test_Framework VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Create the library
 add_library(Test_Framework STATIC
     src/TestRegistry.cpp
-    src/Tests.cpp
 )
 
-target_include_directories(Test_Framework PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# Ensure headers are publicly available
+target_include_directories(Test_Framework PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
 
-# Export and Install Target
+# Export and Install the library
 install(TARGETS Test_Framework
     EXPORT Test_FrameworkTargets
     ARCHIVE DESTINATION lib
