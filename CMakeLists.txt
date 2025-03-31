@@ -5,30 +5,15 @@ project(Test_Framework VERSION 1.0
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Define library
+# Create the library
 add_library(Test_Framework STATIC
     src/TestRegistry.cpp
+    src/Tests.cpp
 )
 
-# Use relative include paths for relocatability
-target_include_directories(Test_Framework
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-)
+target_include_directories(Test_Framework PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-# Compiler options
-target_compile_options(Test_Framework PRIVATE -Wall -Wextra -Werror -pedantic -mavx2)
-
-# Optional: Shared library support
-option(BUILD_SHARED_LIBS "Build as a shared library" OFF)
-if(BUILD_SHARED_LIBS)
-    set_target_properties(Test_Framework PROPERTIES POSITION_INDEPENDENT_CODE ON)
-    target_compile_definitions(Test_Framework PRIVATE TEST_FRAMEWORK_SHARED)
-endif()
-
-# Ensure proper export
+# Export and Install Target
 install(TARGETS Test_Framework
     EXPORT Test_FrameworkTargets
     ARCHIVE DESTINATION lib
@@ -36,10 +21,11 @@ install(TARGETS Test_Framework
     RUNTIME DESTINATION bin
 )
 
+install(DIRECTORY include/ DESTINATION include)
+
+# Generate a Config file for find_package
 install(EXPORT Test_FrameworkTargets
     FILE Test_FrameworkConfig.cmake
     NAMESPACE Test_Framework::
     DESTINATION lib/cmake/Test_Framework
 )
-
-install(DIRECTORY include/ DESTINATION include)
